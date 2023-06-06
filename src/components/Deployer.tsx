@@ -1,16 +1,15 @@
 import {
-  writeQuadraticFundingVotingStrategyFactory,
-  quadraticFundingVotingStrategyFactoryABI,
-  writeMerklePayoutStrategyFactory,
   merklePayoutStrategyFactoryABI,
-  alloSettingsABI,
-  writeRoundFactory,
+  quadraticFundingVotingStrategyFactoryABI,
   roundFactoryABI,
   roundImplementationABI,
-  useRoundImplementationApplicationsStartTime,
   useRoundImplementationApplicationsEndTime,
-  useRoundImplementationRoundStartTime,
+  useRoundImplementationApplicationsStartTime,
   useRoundImplementationRoundEndTime,
+  useRoundImplementationRoundStartTime,
+  writeMerklePayoutStrategyFactory,
+  writeQuadraticFundingVotingStrategyFactory,
+  writeRoundFactory,
 } from "../generated";
 import { useAccount, useWalletClient } from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
@@ -21,19 +20,10 @@ import {
   parseAbiParameters,
   zeroAddress,
 } from "viem";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-import { create } from "zustand";
-import { Input, Button } from "@chakra-ui/react";
-const useAddressesStore = create<{
-  round: Hex;
-  voting: Hex;
-  payout: Hex;
-}>((set) => ({
-  round: zeroAddress,
-  voting: zeroAddress,
-  payout: zeroAddress,
-}));
+import { Button, Input } from "@chakra-ui/react";
+import { useAddressesStore } from "../stores";
 
 export function Deployer() {
   const { data: walletClient } = useWalletClient();
