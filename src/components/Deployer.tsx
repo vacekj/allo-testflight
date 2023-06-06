@@ -3,10 +3,6 @@ import {
   quadraticFundingVotingStrategyFactoryABI,
   roundFactoryABI,
   roundImplementationABI,
-  useRoundImplementationApplicationsEndTime,
-  useRoundImplementationApplicationsStartTime,
-  useRoundImplementationRoundEndTime,
-  useRoundImplementationRoundStartTime,
   writeMerklePayoutStrategyFactory,
   writeQuadraticFundingVotingStrategyFactory,
   writeRoundFactory,
@@ -19,54 +15,30 @@ import {
   Hex,
   parseAbiParameters,
   zeroAddress,
-  isAddress,
 } from "viem";
-import { useEffect, useState } from "react";
-import { formatDistanceToNowStrict } from "date-fns";
 import { Button, Input, Select } from "@chakra-ui/react";
-import { useAddressesStore, useRoundsStore } from "../stores";
+import { useAddressesStore } from "../stores";
 import { RoundInfo } from "./RoundInfo";
-
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 export function Deployer() {
+  const addresses = useAddressesStore();
+  const { round } = useParams();
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
-  const rounds = useRoundsStore();
-  const addresses = useAddressesStore();
+
+  useEffect(() => {
+    if (round) {
+      useAddressesStore.setState({
+        round: round as Hex,
+      });
+    }
+  }, [round]);
 
   return (
     walletClient &&
     address && (
       <div>
-        <Select
-          onChange={(e) => {
-            useAddressesStore.setState({
-              round: e.target.value as Hex,
-            });
-          }}
-        >
-          {rounds.rounds.map((r) => (
-            <option value={r}>{r}</option>
-          ))}
-        </Select>
-
-        <Input
-          placeholder={"existing round address"}
-          onChange={(e) => {
-            useAddressesStore.setState({
-              round: e.target.value as Hex,
-            });
-          }}
-        />
-        {addresses.round && isAddress(addresses.round) && (
-          <Button
-            onClick={() => {
-              rounds.addRound(addresses.round!);
-            }}
-          >
-            Add
-          </Button>
-        )}
-
         <pre>{addresses && JSON.stringify(addresses, null, 4)}</pre>
         <RoundInfo />
 
@@ -136,7 +108,7 @@ export function Deployer() {
               voting,
             });
 
-            rounds.setRounds([...new Set([...rounds.rounds, round])]);
+            window.location.href = "/" + round;
           }}
         >
           Deploy Round
@@ -174,7 +146,7 @@ const deployRound = async (
 
   /* All timestamps are in seconds*/
   const initRoundTime = [
-    _currentTimestamp + 1n, // appStartTime
+    _currentTimestamp + SECONDS_PER_SLOT * 2n, // appStartTime
     _currentTimestamp + SECONDS_PER_SLOT * 4n, // appEndTime
     _currentTimestamp + SECONDS_PER_SLOT * 6n, // roundStartTime
     _currentTimestamp + SECONDS_PER_SLOT * 8n, // roundEndTime

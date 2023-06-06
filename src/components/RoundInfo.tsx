@@ -33,28 +33,33 @@ export function RoundInfo() {
   const { data: appEndTime } = useRoundImplementationApplicationsEndTime({
     address: addresses?.round,
   });
-  const { data: roundStartTime } = useRoundImplementationRoundStartTime({
+  const { data: rndStartTime } = useRoundImplementationRoundStartTime({
     address: addresses?.round,
   });
-  const { data: roundEndTime } = useRoundImplementationRoundEndTime({
+  const { data: rndEndTime } = useRoundImplementationRoundEndTime({
     address: addresses?.round,
   });
 
   /*Time update*/
-  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [currentTime, setCurrentTime] = useState(Date.now() / 1000);
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTime(Date.now() / 1000);
+      setCurrentTime(Date.now());
     }, 1_000);
     return () => {
       clearInterval(interval);
     };
   }, [currentTime]);
 
+  const applicationsStartTime = Number(appStartTime) * 1000;
+  const applicationsEndTime = Number(appEndTime) * 1000;
+  const roundStartTime = Number(rndStartTime) * 1000;
+  const roundEndTime = Number(rndEndTime) * 1000;
+
   const applicationsState: ApplicationState =
-    currentTime < appStartTime
+    currentTime < applicationsStartTime
       ? "will-start"
-      : currentTime > appStartTime && currentTime < appEndTime
+      : currentTime > applicationsStartTime && currentTime < applicationsEndTime
       ? "ongoing"
       : "ended";
   const roundState: ApplicationState =
@@ -64,10 +69,9 @@ export function RoundInfo() {
       ? "ongoing"
       : "ended";
 
-  // @ts-ignore
   return (
-    Boolean(appStartTime) &&
-    Boolean(appEndTime) &&
+    Boolean(applicationsStartTime) &&
+    Boolean(applicationsEndTime) &&
     Boolean(roundStartTime) &&
     Boolean(roundEndTime) && (
       <Card>
@@ -77,11 +81,11 @@ export function RoundInfo() {
         <CardBody>
           <Box bgColor={colourStyles[applicationsState]}>
             Applications: {applicationsState} (
-            {formatDistanceToNowStrict(Number(appStartTime), {
+            {formatDistanceToNowStrict(applicationsStartTime, {
               addSuffix: true,
             })}
             →
-            {formatDistanceToNowStrict(Number(appEndTime), {
+            {formatDistanceToNowStrict(applicationsEndTime, {
               addSuffix: true,
             })}
             )
@@ -93,12 +97,12 @@ export function RoundInfo() {
               )}`}
             >
               <div>
-                Round: {roundState}(
-                {formatDistanceToNowStrict(Number(roundStartTime), {
+                Round: {roundState} (
+                {formatDistanceToNowStrict(roundStartTime, {
                   addSuffix: true,
                 })}
                 →
-                {formatDistanceToNowStrict(Number(roundEndTime), {
+                {formatDistanceToNowStrict(roundEndTime, {
                   addSuffix: true,
                 })}
                 )

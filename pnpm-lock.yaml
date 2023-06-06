@@ -19,6 +19,8 @@ specifiers:
   process: ^0.11.10
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-router: ^6.11.2
+  react-router-dom: ^6.11.2
   rome: ^12.1.3
   typescript: ^5.0.4
   util: ^0.12.4
@@ -42,6 +44,8 @@ dependencies:
   process: 0.11.10
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-router: 6.11.2_react@18.2.0
+  react-router-dom: 6.11.2_biqbaboplfbrettd7655fr4n2y
   util: 0.12.5
   viem: 0.3.50_typescript@5.1.3
   wagmi: 1.1.0_hm24hecucwfntpmzzjoypzhune
@@ -2598,6 +2602,11 @@ packages:
       wagmi: 1.1.0_hm24hecucwfntpmzzjoypzhune
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /@remix-run/router/1.6.2:
+    resolution: {integrity: sha512-LzqpSrMK/3JBAVBI9u3NWtOhWNw5AMQfrUFYB0+bDHTSw17z++WJLsPsxAuK+oSddsxk4d7F/JcdDPM1M5YAhA==}
+    engines: {node: '>=14'}
     dev: false
 
   /@rometools/cli-darwin-arm64/12.1.3:
@@ -6615,6 +6624,29 @@ packages:
       tslib: 2.5.3
       use-callback-ref: 1.3.0_i2bxsyfskhzbpjanbovidbfj7u
       use-sidecar: 1.1.2_i2bxsyfskhzbpjanbovidbfj7u
+    dev: false
+
+  /react-router-dom/6.11.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-JNbKtAeh1VSJQnH6RvBDNhxNwemRj7KxCzc5jb7zvDSKRnPWIFj9pO+eXqjM69gQJ0r46hSz1x4l9y0651DKWw==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+    dependencies:
+      '@remix-run/router': 1.6.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-router: 6.11.2_react@18.2.0
+    dev: false
+
+  /react-router/6.11.2_react@18.2.0:
+    resolution: {integrity: sha512-74z9xUSaSX07t3LM+pS6Un0T55ibUE/79CzfZpy5wsPDZaea1F8QkrsiyRnA2YQ7LwE/umaydzXZV80iDCPkMg==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      '@remix-run/router': 1.6.2
+      react: 18.2.0
     dev: false
 
   /react-style-singleton/2.2.1_i2bxsyfskhzbpjanbovidbfj7u:
