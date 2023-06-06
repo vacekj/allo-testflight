@@ -113,6 +113,8 @@ export function Deployer() {
         >
           Deploy Round
         </Button>
+
+        <Button onClick={() => {}}>Apply to Round</Button>
       </div>
     )
   );
