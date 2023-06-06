@@ -1,5 +1,6 @@
 import { BaseError } from "viem";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { Button } from "@chakra-ui/react";
 
 export function Connect() {
   const { connector, isConnected } = useAccount();
@@ -11,18 +12,18 @@ export function Connect() {
     <div>
       <div>
         {isConnected && (
-          <button onClick={() => disconnect()}>
+          <Button onClick={() => disconnect()}>
             Disconnect from {connector?.name}
-          </button>
+          </Button>
         )}
 
         {connectors
           .filter((x) => x.ready && x.id !== connector?.id)
           .map((x) => (
-            <button key={x.id} onClick={() => connect({ connector: x })}>
+            <Button key={x.id} onClick={() => connect({ connector: x })}>
               {x.name}
               {isLoading && x.id === pendingConnector?.id && " (connecting)"}
-            </button>
+            </Button>
           ))}
       </div>
 

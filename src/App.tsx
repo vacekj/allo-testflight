@@ -5,13 +5,14 @@ import { Connect } from "./components/Connect";
 import { NetworkSwitcher } from "./components/NetworkSwitcher";
 
 import { Deployer } from "./components/Deployer";
+import { Container, Heading } from "@chakra-ui/react";
 
 export function App() {
   const { isConnected } = useAccount();
 
   return (
-    <>
-      <h1>Allo Protocol Testflight</h1>
+    <Container>
+      <Heading>Allo Protocol Testflight</Heading>
 
       <Connect />
 
@@ -22,6 +23,6 @@ export function App() {
           <Deployer />
         </>
       )}
-    </>
+    </Container>
   );
 }

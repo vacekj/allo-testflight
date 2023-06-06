@@ -1,5 +1,6 @@
 import { BaseError } from "viem";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import { Button } from "@chakra-ui/react";
 
 export function NetworkSwitcher() {
   const { chain } = useNetwork();
@@ -19,11 +20,11 @@ export function NetworkSwitcher() {
         <div>
           {chains.map((x) =>
             x.id === chain?.id ? null : (
-              <button key={x.id} onClick={() => switchNetwork(x.id)}>
+              <Button key={x.id} onClick={() => switchNetwork(x.id)}>
                 {x.name}
                 {isLoading && x.id === pendingChainId && " (switching)"}
-              </button>
-            ),
+              </Button>
+            )
           )}
         </div>
       )}
