@@ -19,16 +19,20 @@ import {
   Hex,
   parseAbiParameters,
   zeroAddress,
+  isAddress,
 } from "viem";
 import { useEffect, useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-import { Button, Input } from "@chakra-ui/react";
-import { useAddressesStore } from "../stores";
+import { Button, Input, Select } from "@chakra-ui/react";
+import { useAddressesStore, useRoundsStore } from "../stores";
 
 export function Deployer() {
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const addresses = useAddressesStore();
+
+  const rounds = useRoundsStore();
+
   const { data: appStartTime } = useRoundImplementationApplicationsStartTime({
     address: addresses?.round,
   });
@@ -42,9 +46,8 @@ export function Deployer() {
     address: addresses?.round,
   });
 
-  const [currentTime, setCurrentTime] = useState(Date.now());
-
   /*Time update*/
+  const [currentTime, setCurrentTime] = useState(Date.now());
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(Date.now());
@@ -81,6 +84,12 @@ export function Deployer() {
             </div>
           )}
 
+        <Select>
+          {rounds.rounds.map((r) => (
+            <option value={r}>{r}</option>
+          ))}
+        </Select>
+
         <Input
           placeholder={"existing round address"}
           onChange={(e) => {
@@ -89,6 +98,15 @@ export function Deployer() {
             });
           }}
         />
+        {addresses.round && isAddress(addresses.round) && (
+          <Button
+            onClick={() => {
+              rounds.addRound(addresses.round!);
+            }}
+          >
+            Add
+          </Button>
+        )}
 
         <pre>{addresses && JSON.stringify(addresses, null, 4)}</pre>
         <Button
@@ -156,6 +174,8 @@ export function Deployer() {
               payout,
               voting,
             });
+
+            rounds.setRounds([...new Set([...rounds.rounds, round])]);
           }}
         >
           Deploy Round
