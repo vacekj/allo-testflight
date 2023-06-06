@@ -127,7 +127,7 @@ export function Deployer() {
               voting as Hex,
               payout as Hex,
               address,
-              BigInt(Date.now() * 1000)
+              BigInt(Math.floor(Date.now() / 1000))
             );
 
             useAddressesStore.setState({

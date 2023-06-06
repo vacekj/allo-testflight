@@ -8,7 +8,7 @@ export function App() {
   const { isConnected } = useAccount();
 
   return (
-    <Container>
+    <Container maxW={"6xl"}>
       <Heading>Allo Protocol Testflight</Heading>
 
       <ConnectButton />
