@@ -25,66 +25,25 @@ import { useEffect, useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { Button, Input, Select } from "@chakra-ui/react";
 import { useAddressesStore, useRoundsStore } from "../stores";
+import { RoundInfo } from "./RoundInfo";
 
 export function Deployer() {
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
-  const addresses = useAddressesStore();
-
   const rounds = useRoundsStore();
-
-  const { data: appStartTime } = useRoundImplementationApplicationsStartTime({
-    address: addresses?.round,
-  });
-  const { data: appEndTime } = useRoundImplementationApplicationsEndTime({
-    address: addresses?.round,
-  });
-  const { data: roundStartTime } = useRoundImplementationRoundStartTime({
-    address: addresses?.round,
-  });
-  const { data: roundEndTime } = useRoundImplementationRoundEndTime({
-    address: addresses?.round,
-  });
-
-  /*Time update*/
-  const [currentTime, setCurrentTime] = useState(Date.now());
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 1_000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [currentTime]);
+  const addresses = useAddressesStore();
 
   return (
     walletClient &&
     address && (
       <div>
-        {Boolean(appStartTime) &&
-          Boolean(appEndTime) &&
-          Boolean(roundStartTime) &&
-          Boolean(roundEndTime) && (
-            <div>
-              {formatDistanceToNowStrict(Number(appStartTime), {
-                addSuffix: true,
-              })}
-              -
-              {formatDistanceToNowStrict(Number(appEndTime), {
-                addSuffix: true,
-              })}
-              ,{" "}
-              {formatDistanceToNowStrict(Number(roundStartTime), {
-                addSuffix: true,
-              })}
-              -
-              {formatDistanceToNowStrict(Number(roundEndTime), {
-                addSuffix: true,
-              })}
-            </div>
-          )}
-
-        <Select>
+        <Select
+          onChange={(e) => {
+            useAddressesStore.setState({
+              round: e.target.value as Hex,
+            });
+          }}
+        >
           {rounds.rounds.map((r) => (
             <option value={r}>{r}</option>
           ))}
@@ -109,6 +68,8 @@ export function Deployer() {
         )}
 
         <pre>{addresses && JSON.stringify(addresses, null, 4)}</pre>
+        <RoundInfo />
+
         <Button
           onClick={async () => {
             let { hash } = await writeQuadraticFundingVotingStrategyFactory({
