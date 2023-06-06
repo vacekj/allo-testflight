@@ -1,11 +1,8 @@
 import { useAccount } from "wagmi";
 
-import { Account } from "./components/Account";
-import { Connect } from "./components/Connect";
-import { NetworkSwitcher } from "./components/NetworkSwitcher";
-
 import { Deployer } from "./components/Deployer";
 import { Container, Heading } from "@chakra-ui/react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export function App() {
   const { isConnected } = useAccount();
@@ -14,15 +11,9 @@ export function App() {
     <Container>
       <Heading>Allo Protocol Testflight</Heading>
 
-      <Connect />
+      <ConnectButton />
 
-      {isConnected && (
-        <>
-          <Account />
-          <NetworkSwitcher />
-          <Deployer />
-        </>
-      )}
+      {isConnected && <Deployer />}
     </Container>
   );
 }
