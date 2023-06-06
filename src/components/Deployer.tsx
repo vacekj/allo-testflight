@@ -1,8 +1,9 @@
 export function Deployer() {
-    return <div>
-        <button onClick={() => {
+  return (
+    <div>
+      <button onClick={() => {
 
-        }}>Deploy
-        </button>
+      }}>Deploy</button>
     </div>
+  );
 }

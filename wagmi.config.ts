@@ -1,13 +1,13 @@
-import { defineConfig } from '@wagmi/cli'
-import { hardhat, react } from '@wagmi/cli/plugins'
-import * as chains from 'wagmi/chains'
+import { defineConfig } from "@wagmi/cli";
+import { hardhat, react } from "@wagmi/cli/plugins";
+import * as chains from "wagmi/chains";
 
 export default defineConfig({
-  out: 'src/generated.ts',
+  out: "src/generated.ts",
   plugins: [
     hardhat({
-      project: './contracts',
+      project: "./contracts",
     }),
     react(),
   ],
-})
+});
