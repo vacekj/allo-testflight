@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <RainbowKitProvider chains={chains}>
           <BrowserRouter>
             <Routes>
-              <Route path={"/:round?"} element={<App />} />
+              <Route path={"/"} element={<App />} />
             </Routes>
           </BrowserRouter>
         </RainbowKitProvider>
