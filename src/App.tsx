@@ -68,7 +68,7 @@ export function App() {
             walletClient,
             contractAddress: XPZ,
             nonce: 0n,
-            erc20Name: "XPZ",
+            erc20Name: "Exprez",
             owner: address,
             spender: MRC_IMPL,
             value: 2n,
