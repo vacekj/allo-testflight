@@ -1,12 +1,9 @@
 import { Button, Container, Heading } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { signDaiPermit } from "eth-permit";
-import { providers } from "ethers";
 import { useState } from "react";
 import { Hex, hexToNumber, slice } from "viem";
 import { useAccount, useContractWrite, useNetwork } from "wagmi";
-import { useWalletClient, type WalletClient } from "wagmi";
-import { useEthersSigner } from "./ethers";
+import { useWalletClient } from "wagmi";
 import mrcabi from "./mrcabi";
 import { signPermitEIP2612 } from "./permit";
 
@@ -35,7 +32,7 @@ const DAI = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844";
 const XPZ = "0xbaa146619512b97216991ba37ae74de213605f8e";
 export function App() {
   const [permit, setPermit] = useState<Hex>();
-  const [rsv, setRsv] = useState({
+  const [rsv, setRsv] = useState<{ r: Hex; s: Hex; v: number; deadline: bigint }>({
     r: "0x",
     s: "0x",
     v: 0,
@@ -54,16 +51,14 @@ export function App() {
       rsv.deadline,
       1n,
       rsv.v,
-      rsv.r as Hex,
-      rsv.s as Hex,
+      rsv.r,
+      rsv.s,
     ],
   });
   const { address } = useAccount();
   const {
     chain,
   } = useNetwork();
-
-  const signer = useEthersSigner();
 
   const { data: walletClient } = useWalletClient();
 
