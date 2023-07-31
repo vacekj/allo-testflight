@@ -19,16 +19,8 @@ const groupedAmounts: Record<Hex, bigint> = {
   "0x894D5d1E65B9C51671e93E2e9a159C90d1a455d1": 2n,
 };
 
-const permitSignature = {
-  "v": 28,
-  "r": "0xd4af81ba574e636277811567939cb36be9883503f027e605874a97f40dc69fcc",
-  "s": "0x4135abc743cda7ed036b02b852ae2f3a12844f8fd551297db45c70c735fac22b",
-  "deadline": 1693440000000n,
-};
-
 const rounds = Object.keys(groupedAmounts) as Hex[];
 
-const DAI = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844";
 const XPZ = "0xbaa146619512b97216991ba37ae74de213605f8e";
 export function App() {
   const [permit, setPermit] = useState<Hex>();
@@ -41,15 +33,14 @@ export function App() {
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: "0x521bb00da4273e1882d2fb690388cad81bdd5e55",
     abi: mrcabi,
-    functionName: "voteDAIPermit",
+    functionName: "voteERC20Permit",
     args: [
       Object.values(groupedVotes),
       rounds,
       Object.values(groupedAmounts),
       2n,
-      DAI,
+      XPZ,
       rsv.deadline,
-      1n,
       rsv.v,
       rsv.r,
       rsv.s,
@@ -63,7 +54,7 @@ export function App() {
   const { data: walletClient } = useWalletClient();
 
   if (!walletClient || !chain?.id || !address) {
-    return "please connect your wllate";
+    return <ConnectButton />;
   }
 
   return (
@@ -93,7 +84,7 @@ export function App() {
           setPermit(rawPermit);
         }}
       >
-        DAI Permit sign
+        Sign permit
       </Button>
 
       <Button
