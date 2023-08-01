@@ -2,10 +2,12 @@ import { Button, Container, Heading } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { Hex, hexToNumber, slice } from "viem";
-import { useAccount, useContractWrite, useNetwork } from "wagmi";
+import { useAccount, useContractRead, useContractWrite, useNetwork, useToken } from "wagmi";
 import { useWalletClient } from "wagmi";
+import daiabi from "./daiabi";
+import Daiabi from "./daiabi";
 import mrcabi from "./mrcabi";
-import { signPermitEIP2612 } from "./permit";
+import { signPermitDai, signPermitEIP2612 } from "./permit";
 
 const MRC_IMPL = "0x521bb00da4273e1882d2fb690388cad81bdd5e55";
 const groupedVotes: Record<Hex, Hex[]> = {
@@ -22,6 +24,8 @@ const groupedAmounts: Record<Hex, bigint> = {
 const rounds = Object.keys(groupedAmounts) as Hex[];
 
 const XPZ = "0xbaa146619512b97216991ba37ae74de213605f8e";
+const DAI = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844";
+
 export function App() {
   const [permit, setPermit] = useState<Hex>();
   const [rsv, setRsv] = useState<{ r: Hex; s: Hex; v: number; deadline: bigint }>({
@@ -30,28 +34,43 @@ export function App() {
     v: 0,
     deadline: 0n,
   });
+
+  const { address } = useAccount();
+  const { data: daiNonce } = useContractRead({
+    abi: daiabi,
+    address: DAI,
+    functionName: "nonces",
+    args: [address!],
+  });
+
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: "0x521bb00da4273e1882d2fb690388cad81bdd5e55",
     abi: mrcabi,
-    functionName: "voteERC20Permit",
+    functionName: "voteDAIPermit",
     args: [
       Object.values(groupedVotes),
       rounds,
       Object.values(groupedAmounts),
       Object.values(groupedAmounts).reduce((acc, b) => acc + b),
-      XPZ,
+      DAI,
       rsv.deadline,
+      daiNonce ?? 0n,
       rsv.v,
       rsv.r,
       rsv.s,
     ],
   });
-  const { address } = useAccount();
+
   const {
     chain,
   } = useNetwork();
 
   const { data: walletClient } = useWalletClient();
+  const {
+    data: daiData,
+  } = useToken({
+    address: DAI,
+  });
 
   if (!walletClient || !chain?.id || !address) {
     return <ConnectButton />;
@@ -84,7 +103,34 @@ export function App() {
           setPermit(rawPermit);
         }}
       >
-        Sign permit
+        Sign permit 2612
+      </Button>
+
+      <Button
+        onClick={async () => {
+          const rawPermit = await signPermitDai({
+            chainId: chain?.id,
+            expiry: 1693440000000n,
+            walletClient,
+            contractAddress: DAI,
+            nonce: daiNonce ?? 0n,
+            erc20Name: daiData?.name ?? "Dai Stablecoin",
+            holder: address,
+            spender: MRC_IMPL,
+            allowed: Object.values(groupedAmounts).reduce((acc, b) => acc + b),
+          });
+          const [r, s, v] = [slice(rawPermit, 0, 32), slice(rawPermit, 32, 64), slice(rawPermit, 64, 65)];
+          console.log(r, s, hexToNumber(v));
+          setRsv({
+            r,
+            s,
+            v: hexToNumber(v),
+            deadline: 1693440000000n,
+          });
+          setPermit(rawPermit);
+        }}
+      >
+        Sign Permit DAI
       </Button>
 
       <Button

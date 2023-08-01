@@ -13,7 +13,19 @@ type SignPermitProps = {
   chainId: number;
 };
 
-/*64, 64, 2 r, s, v, remove 0x*/
+type SignPermitPropsDai = {
+  walletClient: WalletClient;
+  contractAddress: Hex;
+  erc20Name: string;
+  holder: Hex;
+  spender: Hex;
+  nonce: bigint;
+  expiry: bigint;
+  chainId: number;
+  allowed: bigint;
+};
+
+/*32, 32, 2 r, s, v, remove 0x*/
 export const signPermitEIP2612 = async (
   { walletClient, contractAddress, erc20Name, owner, spender, value, nonce, deadline, chainId }: SignPermitProps,
 ) => {
@@ -44,6 +56,43 @@ export const signPermitEIP2612 = async (
 
   return walletClient.signTypedData({
     account: owner,
+    message,
+    domain: domainData,
+    primaryType: "Permit",
+    types,
+  });
+};
+
+export const signPermitDai = async (
+  { walletClient, contractAddress, erc20Name, holder, allowed, spender, nonce, expiry, chainId }: SignPermitPropsDai,
+) => {
+  const types = {
+    Permit: [
+      { name: "holder", type: "address" },
+      { name: "spender", type: "address" },
+      { name: "nonce", type: "uint256" },
+      { name: "expiry", type: "uint256" },
+      { name: "allowed", type: "uint256" },
+    ],
+  };
+
+  const domainData = {
+    name: erc20Name,
+    version: "1",
+    chainId: chainId,
+    verifyingContract: contractAddress,
+  };
+
+  const message = {
+    holder,
+    spender,
+    nonce,
+    expiry,
+    allowed,
+  };
+
+  return walletClient.signTypedData({
+    account: holder,
     message,
     domain: domainData,
     primaryType: "Permit",
