@@ -64,7 +64,7 @@ export const signPermitEIP2612 = async (
 };
 
 export const signPermitDai = async (
-  { walletClient, contractAddress, erc20Name, holder, allowed, spender, nonce, expiry, chainId }: SignPermitPropsDai,
+  { walletClient, contractAddress, erc20Name, holder, spender, nonce, expiry, chainId }: SignPermitPropsDai,
 ) => {
   const types = {
     Permit: [
@@ -72,7 +72,7 @@ export const signPermitDai = async (
       { name: "spender", type: "address" },
       { name: "nonce", type: "uint256" },
       { name: "expiry", type: "uint256" },
-      { name: "allowed", type: "uint256" },
+      { name: "allowed", type: "bool" },
     ],
   };
 
@@ -88,7 +88,7 @@ export const signPermitDai = async (
     spender,
     nonce,
     expiry,
-    allowed,
+    allowed: true,
   };
 
   return walletClient.signTypedData({
